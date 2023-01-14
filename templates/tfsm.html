@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>T-FSM</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/gviz.css') }}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link href="{{ url_for('static',filename='css/pagination.css') }}" rel="stylesheet">
+  <script src="{{ url_for('static',filename='js/jquery-3.6.2.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/pagination.min.js') }}"></script>
+  <script>
+    // Sniff MSIE version
+    // http://james.padolsey.com/javascript/detect-ie-in-js-using-conditional-comments/
+    var ie = (function () {
+      var undef,
+        v = 3,
+        div = document.createElement('div'),
+        all = div.getElementsByTagName('i');
+      while (
+        div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->', all[0]
+      );
+      return v > 4 ? v : undef;
+    }());
+
+    function takeAction() {
+      if (ie && ie < 9) {
+        D3notok();
+      } else {
+        // Load D3.js, and once loaded do our stuff
+        var head = document.getElementsByTagName('head')[0];
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = "{{ url_for('static',filename='js/d3.min.js') }}";
+        script.addEventListener('load', D3ok, false);
+        script.onload = "D3ok();";
+        head.appendChild(script);
+      }
+    }
+  </script>
+</head>
+
+<body onload="takeAction();">
+
+  <div id="nocontent">
+    <h1>Sadly your browser is not compatible with this site</h1>
+
+    <div>You can use <a href="http://www.google.com/chrome/">Google
+        Chrome</a>, <a href="http://www.mozilla.org/firefox">Mozilla Firefox</a> or <a
+        href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Microsoft
+        Internet Explorer (v9 or above)</a></div>
+
+  </div>
+  <div id="header">
+    <h1>T-FSM</h1>
+    <!-- <img src="static/logo.jpg" /> -->
+  </div>
+  <div id="body">
+    <div id="leftpanel">
+      <div id="datasets">
+        <select id="datasets_combobox" class="form-select">
+          <option>Choose a Dataset</option>
+        </select>
+      </div>
+      <div id="parameters" class="display_block">
+        <h5>Parameters</h5>
+        <div>
+          <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping">Support:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <input type="text" id="support_no" class="form-control" aria-label="Username"
+              aria-describedby="addon-wrapping">
+          </div>
+          <div>
+            <div class="float_left">
+              Support Type
+            </div>
+            <div class="form-check float_left radio_margins">
+              <input class="form-check-input" type="radio" name="support_type" id="parallel" value="parallel" checked>
+              <label class="form-check-label" for="parallel">
+                MNI
+              </label>
+            </div>
+            <div class="form-check float_left radio_margins">
+              <input class="form-check-input" type="radio" name="support_type" id="fraction_score"
+                value="fraction_score">
+              <label class="form-check-label" for="fraction_score">
+                Fraction-Score
+              </label>
+            </div>
+          </div>
+          <div class="input-group flex-nowrap">
+            <span class="input-group-text">Max Node #:&nbsp;</span>
+            <input id="max_pattern" type="text" class="form-control" aria-describedby="max_pattern">
+          </div>
+          <div class="input-group flex-nowrap top_padding_5">
+            <span class="input-group-text">Thread #:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <input id="threads" type="text" class="form-control" aria-describedby="threads" value="4">
+          </div>
+        </div>
+        <div class="all_padding_5">
+          <button type="button" class="btn btn-secondary" onclick="mine()">Mine</button>
+        </div>
+      </div>
+      <div id="patterns" class="display_block">
+        <h5>Patterns</h5>
+        <div id="patterns-container" class="scroll"></div>
+        <div id="pagination-container"></div>
+      </div>
+      <div id="search" class="display_block float_left">
+        <h5>Filters</h5>
+        <div style="display: flex;">
+          <div class="input-group input-group-sm flex-nowrap">
+            <span class="input-group-text">Min Node #:</span>
+            <input id="min_node" type="text" class="form-control" style="width: 50px;">
+          </div>
+          <div class="input-group input-group-sm flex-nowrap" style="flex: 1; margin-left:5px;">
+            <span class="input-group-text">Max Node #:</span>
+            <input id="max_node" type="text" class="form-control" style="width: 50px;">
+          </div>
+        </div>
+        <div class="top_padding_5" style="display: flex;">
+          <div class="input-group input-group-sm flex-nowrap">
+            <span class="input-group-text">Min Edge #:&nbsp;</span>
+            <input id="min_edge" type="text" class="form-control" style="width: 50px;">
+          </div>
+          <div class="input-group input-group-sm flex-nowrap" style="flex: 1; margin-left:5px;">
+            <span class="input-group-text">Max Edge #:</span>
+            <input id="max_edge" type="text" class="form-control" style="width: 50px;">
+          </div>
+        </div>
+        <div class="top_padding_5" style="display: flex;">
+          <div class="input-group input-group-sm flex-nowrap">
+            <span class="input-group-text">Min Label #:&nbsp;</span>
+            <input id="min_label" type="text" class="form-control" style="width: 50px;">
+          </div>
+          <div class="input-group input-group-sm flex-nowrap" style="flex: 1; margin-left:5px;">
+            <span class="input-group-text">Max Label #:</span>
+            <input id="max_label" type="text" class="form-control" style="width: 50px;">
+          </div>
+        </div>
+        <div class="all_padding_5">
+          <button type="button" class="btn btn-secondary" onclick="search()">Search</button>
+        </div>
+      </div>
+    </div>
+    <div id="networkPanel">
+      <div>
+        <div id="link_strength"><label>Link Strength</label></div>
+        <div id="link_strength_input"><input style="width:100px;" type="range" min="0" max="1" step="any" value="1">
+        </div>
+        <div id="mining_time">
+        </div>
+      </div>
+      <div class="loader on" id="loader"></div>
+      <div id="sidepanel">
+        <div id="nodeInfo" class="panel_off"></div>
+      </div>
+      <div id="settings" class="display_block float_left">
+        <h5>Settings</h5>
+        <div class="input-group flex-nowrap float_left">
+          <span class="input-group-text" id="addon-wrapping">Max Result #:</span>
+          <input type="text" id="max_result" value="10000" class="form-control" style="width: 50px;">
+        </div>
+        <div class="input-group flex-nowrap top_padding_5 float_left">
+          <span class="input-group-text" id="addon-wrapping">Thread #:</span>
+          <input type="text" id="threads" value="4" class="form-control" style="width: 50px;">
+        </div>
+        <div class="all_padding_5 float_left">
+          <button type="button" class="btn btn-secondary" onclick="graph_match()">Match</button>
+        </div>
+        <!-- </div> -->
+      </div>
+
+
+    </div>
+  </div>
+  <script src="{{
+    url_for('static', filename='js/tfsm.js')
+  }}"></script>
+</body>
+
+</html>

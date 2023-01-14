@@ -1,0 +1,17 @@
+1. Compile main.cpp: 
+g++ exec\main.cpp
+
+2. Generate two files on disk: (requires for every new dataset)
+a.exe -l static\data\example\data_graph -n static\data\example\neighbors -o static\data\example\offsets -p static\data\example\labels
+
+Data Graphs:
+- UK_POI: a.exe -l static\data\UK_POI\data_graph -n static\data\UK_POI\neighbors -o static\data\UK_POI\offsets -p static\data\UK_POI\labels
+
+3. query by node id:
+a.exe -n static\data\example\neighbors -o static\data\example\offsets -p static\data\example\labels -t 1
+
+4. get union graph
+a.exe -n static\data\example\neighbors -o static\data\example\offsets -p static\data\example\labels -u static\data\example\union_graph 7 8 9 10 11 12 13 
+
+5. get expansion graph
+a.exe -n static\data\example\neighbors -o static\data\example\offsets -p static\data\example\labels -e expansion_graph.graph 7 8 9 10 11 12 13

@@ -1,0 +1,8 @@
+.t-thinker-demo
+__pycache__
+others
+static/data/example/
+static/data/example2
+static/data/GSE1730
+static/js/backup
+/helper.ipynb

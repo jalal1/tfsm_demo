@@ -1,0 +1,18 @@
+https://github.com/lyuheng/T-FSM
+
+./run.exe -file ../../static/data/example/data_graph.graph -freq 5 -thread 4
+
+output:
+t 2 1 v 0 0 1 v 1 2 1 e 0 1 
+t 2 1 v 0 1 1 v 1 1 1 e 0 1
+t 2 1 v 0 0 1 v 1 1 1 e 0 1
+t 2 1 v 0 1 1 v 1 2 1 e 0 1
+t 3 2 v 0 0 2 v 1 1 1 v 2 2 1 e 0 1 e 0 2
+t 3 2 v 0 0 1 v 1 1 2 v 2 2 1 e 0 1 e 1 2
+t 3 2 v 0 0 1 v 1 2 2 v 2 1 1 e 0 1 e 1 2
+t 3 3 v 0 0 2 v 1 1 2 v 2 2 2 e 0 1 e 1 2 e 2 0
+global_num_idle: 4
+[TIME] Loading Graph Time: 0.004 s
+[TIME] Mining Time: 0.101 s
+[TIME] Total Elapsed Time: 0.106 s
+[INFO] # Frequent Patterns: 8
