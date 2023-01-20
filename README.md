@@ -19,9 +19,9 @@ All patterns and matched instances are intuitively drawn as force-directed graph
   <img src="imgs/patterns1.PNG" />
 </p>
 
-<p align="center">
+<!-- <p align="center">
   <img src="imgs/tfsm.gif" />
-</p>
+</p> -->
 
 ## YouTube Demo
 
